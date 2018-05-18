@@ -13,25 +13,15 @@ var Promise = require('bluebird');
 var helpers = require('./promisification');
 var halpers = require('./promiseConstructor');
 
-
-
-var fetchProfileAndWriteToFile = function(readFilePath, writeFilePath) {
-  return halpers.pluckFirstLineFromFileAsync(readFilePath)
-    .then((user) => {
-      return helpers.getGitHubProfileAsync(user)
-        .then((body) => {
-          return new Promise((resolve, reject) => {
+var fetchProfileAndWriteToFile = (readFilePath, writeFilePath) =>
+  halpers.pluckFirstLineFromFileAsync(readFilePath)
+    .then(user =>
+      helpers.getGitHubProfileAsync(user)
+        .then(body =>
+          new Promise((resolve, reject) => 
             fs.writeFile(writeFilePath, JSON.stringify(body), (err) => {
-              if (err) { 
-                reject(err); 
-              } else {
-                resolve();
-              }
-            });
-          });
-        });
-    });
-};
+              err ? reject(err) : resolve();
+            }))));
 
 // Export these functions so we can test them
 module.exports = {
